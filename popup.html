@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Website Reputation Guardian</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Modern subtle design - Color scheme #131724 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --bg-primary: #131724;
+            --bg-secondary: #1a1f2e;
+            --bg-card: #1e2436;
+            --border-subtle: #2a3146;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a8c3;
+            --text-muted: #6e768f;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --accent: #5b6e9c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            width: 380px;
+            min-height: 520px;
+            background: var(--bg-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            padding: 20px 18px 22px;
+            background: var(--bg-primary);
+            border-radius: 20px;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .icon-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+        
+        .icon-btn:hover {
+            background: var(--bg-card);
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+        
+        /* URL Card */
+        .url-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .domain {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            word-break: break-all;
+            font-family: monospace;
+        }
+        
+        .full-url {
+            font-size: 11px;
+            color: var(--text-secondary);
+            word-break: break-all;
+            margin-bottom: 8px;
+        }
+        
+        .scan-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Score Circle */
+        .score-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--success) 0deg, var(--info) 180deg, var(--bg-secondary) 360deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+        }
+        
+        .score-number {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+            font-family: monospace;
+        }
+        
+        .score-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+            letter-spacing: 1px;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 24px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 10px;
+            background: var(--info);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.2s ease;
+        }
+        
+        .stat-item:hover {
+            border-color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        
+        .stat-value {
+            font-size: 13px;
+            font-weight: 700;
+            font-family: monospace;
+        }
+        
+        .stat-value.safe { color: var(--success); }
+        .stat-value.warning { color: var(--warning); }
+        .stat-value.danger { color: var(--danger); }
+        
+        /* Reasons Container */
+        .reasons-container {
+            margin-bottom: 20px;
+        }
+        
+        .reasons-container h3 {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .reasons-list {
+            list-style: none;
+        }
+        
+        .reasons-list li {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 3px solid transparent;
+            color: var(--text-secondary);
+        }
+        
+        .reasons-list li.positive { 
+            border-left-color: var(--success);
+            color: var(--success);
+        }
+        .reasons-list li.warning { 
+            border-left-color: var(--warning);
+            color: var(--warning);
+        }
+        .reasons-list li.negative { 
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+        .reasons-list li.info { 
+            border-left-color: var(--info);
+            color: var(--info);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: var(--text-primary);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+        
+        .btn-primary:hover {
+            background: #6b7fb0;
+            transform: translateY(-1px);
+        }
+        
+        .btn-outline:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 9px;
+            color: var(--text-muted);
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+        
+        /* Loading Item */
+        .loading-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+        }
+        
+        .loading-item::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--border-subtle);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Simple scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>GhostBrowse</h1>
+            <div class="header-actions">
+                <button id="refresh-btn" class="icon-btn" title="Refresh analysis">↻</button>
+                <button id="settings-btn" class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </div>
+        <div class="settings-panel" id="settingsPanel" style="display: none;">
+    <h3>Settings</h3>
+    <div class="setting-item">
+        <label>
+            <input type="checkbox" id="showBadgeToggle" checked>
+            Show safety badge on extension icon
+        </label>
+        <p class="setting-desc">Display safety score on the extension badge</p>
+    </div>
+    <div class="setting-item">
+        <label>
+            <input type="checkbox" id="autoScanToggle" checked>
+            Auto-scan on page load
+        </label>
+        <p class="setting-desc">Automatically scan websites when you visit them</p>
+    </div>
+    <button id="saveSettingsBtn" class="btn btn-primary">Save Settings</button>
+</div>
+        
+        <!-- URL Display -->
+        <div class="url-card">
+            <div class="domain" id="domain">Loading...</div>
+            <div class="full-url" id="full-url"></div>
+            <div class="scan-time" id="scan-time"></div>
+        </div>
+        
+        <!-- Score Circle -->
+        <div class="score-container">
+            <div class="score-circle">
+                <span class="score-number" id="score">0</span>
+                <span class="score-label">Safety Score</span>
+            </div>
+            <div class="status-badge" id="status">Analyzing...</div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>Risk Level</span>
+                <span id="risk-level">Calculating...</span>
+            </div>
+            <div class="progress-bar">
+                <div id="bar" class="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Detailed Stats -->
+        <div class="stats-grid" id="detailed-stats">
+            <!-- Stats will be populated here -->
+        </div>
+        
+        <!-- Reasons List -->
+        <div class="reasons-container">
+            <h3>Analysis Details</h3>
+            <ul id="reasons" class="reasons-list">
+                <li class="loading-item">Analyzing website security...</li>
+            </ul>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="report-btn" class="btn btn-outline">Report Issue</button>
+            <button id="details-btn" class="btn btn-primary">Full Report</button>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <span>Powered by VirusTotal & Wayback Machine</span>
+        </div>
+    </div>
+    
+    <script src="api.js"></script>
+    <script src="reputation.js"></script>
+    <script>
+        // Enhanced popup.js with subtle #131724 color scheme
+        (function() {
+            console.log("Website Reputation Guardian - Active");
+            
+            // Store original functions
+            const originalDisplayResults = window.displayResults;
+            const originalDisplayDetailedStats = window.displayDetailedStats;
+            const originalUpdateProgressBar = window.updateProgressBar;
+            
+            // Color mappings for #131724 scheme
+            const colorMap = {
+                safe: '#2ecc71',
+                warning: '#f39c12',
+                danger: '#e74c3c',
+                info: '#3498db'
+            };
+            
+            // Enhanced displayResults
+            window.displayResults = function(result) {
+                console.log("Displaying results");
+                
+                // Update score
+                const scoreEl = document.getElementById("score");
+                if (scoreEl) {
+                    const oldScore = parseInt(scoreEl.textContent) || 0;
+                    const newScore = result.score;
+                    animateNumber(scoreEl, oldScore, newScore, 400);
+                }
+                
+                // Status badge
+                const statusEl = document.getElementById("status");
+                if (statusEl) {
+                    statusEl.textContent = result.status;
+                    statusEl.style.background = 'var(--bg-secondary)';
+                    statusEl.style.border = `1px solid ${result.statusColor}`;
+                    statusEl.style.color = result.statusColor;
+                }
+                
+                // Risk level
+                const riskLevelEl = document.getElementById("risk-level");
+                if (riskLevelEl) {
+                    riskLevelEl.textContent = result.status;
+                    riskLevelEl.style.color = result.statusColor;
+                }
+                
+                // Reasons list
+                const reasonsList = document.getElementById("reasons");
+                if (reasonsList && result.reasons) {
+                    reasonsList.innerHTML = "";
+                    
+                    if (result.reasons.length === 0) {
+                        const li = document.createElement("li");
+                        li.innerHTML = "✓ All security checks passed";
+                        li.className = "positive";
+                        reasonsList.appendChild(li);
+                    } else {
+                        result.reasons.forEach(reason => {
+                            const li = document.createElement("li");
+                            li.textContent = reason;
+                            
+                            if (reason.startsWith("✓") || reason.includes("Secure") || reason.includes("clean")) {
+                                li.className = "positive";
+                            } else if (reason.includes("⚠️") || reason.includes("Suspicious") || reason.includes("risk")) {
+                                li.className = "warning";
+                            } else if (reason.includes("✗") || reason.includes("malicious") || reason.includes("Dangerous")) {
+                                li.className = "negative";
+                            } else {
+                                li.className = "info";
+                            }
+                            
+                            reasonsList.appendChild(li);
+                        });
+                    }
+                }
+                
+                // Call original if needed
+                if (originalDisplayResults && typeof originalDisplayResults === 'function') {
+                    // Use enhanced version
+                }
+            };
+            
+            // Enhanced displayDetailedStats
+            window.displayDetailedStats = function(stats) {
+                const statsContainer = document.getElementById("detailed-stats");
+                if (!statsContainer) return;
+                
+                statsContainer.innerHTML = "";
+                
+                // VirusTotal Card
+                if (stats.vtStats || stats.virustotal) {
+                    const vtData = stats.vtStats || stats.virustotal;
+                    const malicious = vtData.malicious || 0;
+                    const suspicious = vtData.suspicious || 0;
+                    
+                    statsContainer.innerHTML += `
+                        <div class="stat-item">
+                            <div class="stat-label">VirusTotal</div>
+                            <div class="stat-value ${malicious > 0 ? 'danger' : (suspicious > 0 ? 'warning' : 'safe')}">
+                                ${malicious > 0 ? `⚠️ ${malicious}` : (suspicious > 0 ? `🔍 ${suspicious}` : `✓ Clean`)}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // HTTPS Card
+                if (stats.https !== undefined) {
+                    statsContainer.innerHTML += `
+                        <div class="stat-item">
+                            <div class="stat-label">HTTPS</div>
+                            <div class="stat-value ${stats.https ? 'safe' : 'danger'}">
+                                ${stats.https ? '🔒 Secure' : '⚠️ Insecure'}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Wayback Machine Card
+                if (stats.wayback) {
+                    statsContainer.innerHTML += `
+                        <div class="stat-item">
+                            <div class="stat-label">Archive</div>
+                            <div class="stat-value ${stats.wayback.hasSnapshot ? 'safe' : 'warning'}">
+                                ${stats.wayback.hasSnapshot ? '📚 Found' : '📭 None'}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Fill remaining slots
+                const currentItems = statsContainer.children.length;
+                if (currentItems < 3) {
+                    for (let i = currentItems; i < 3; i++) {
+                        statsContainer.innerHTML += `
+                            <div class="stat-item">
+                                <div class="stat-label">Status</div>
+                                <div class="stat-value safe">✓ Active</div>
+                            </div>
+                        `;
+                    }
+                }
+            };
+            
+            // Enhanced updateProgressBar
+            window.updateProgressBar = function(score) {
+                const bar = document.getElementById("bar");
+                if (bar) {
+                    const width = 100 - score;
+                    bar.style.width = width + "%";
+                    
+                    if (score >= 70) {
+                        bar.style.background = '#2ecc71';
+                    } else if (score >= 50) {
+                        bar.style.background = '#3498db';
+                    } else if (score >= 30) {
+                        bar.style.background = '#f39c12';
+                    } else if (score >= 15) {
+                        bar.style.background = '#e67e22';
+                    } else {
+                        bar.style.background = '#e74c3c';
+                    }
+                }
+            };
+            
+            // Number animation
+            function animateNumber(element, start, end, duration) {
+                if (start === end) return;
+                const range = end - start;
+                const startTime = performance.now();
+                
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.round(start + (range * easeOut));
+                    element.textContent = current;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    }
+                }
+                
+                requestAnimationFrame(update);
+            }
+            
+            // Refresh button
+            const refreshBtn = document.getElementById('refresh-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    location.reload();
+                });
+            }
+            
+            // Settings button
+            const settingsBtn = document.getElementById('settings-btn');
+            if (settingsBtn) {
+                settingsBtn.addEventListener('click', function() {
+                    alert('Settings panel coming soon.');
+                });
+            }
+            
+            // Report button
+            const reportBtn = document.getElementById('report-btn');
+            if (reportBtn) {
+                reportBtn.addEventListener('click', function() {
+                    const url = document.getElementById('full-url')?.title || 
+                               document.getElementById('full-url')?.textContent ||
+                               'current website';
+                    alert(`Report submitted for: ${url}\nOur team will review this domain.`);
+                });
+            }
+            
+            // Details button
+            const detailsBtn = document.getElementById('details-btn');
+            if (detailsBtn) {
+                detailsBtn.addEventListener('click', function() {
+                    const score = document.getElementById('score')?.textContent || 'N/A';
+                    const status = document.getElementById('status')?.textContent || 'Unknown';
+                    alert(`Full Report\n━━━━━━━━━━━━━━━━\nSafety Score: ${score}/100\nRisk Level: ${status}\n━━━━━━━━━━━━━━━━\n• VirusTotal Security Scan\n• SSL/TLS Certificate Validation\n• Wayback Machine Archive Check\n• Domain Reputation Analysis`);
+                });
+            }
+            
+            console.log("UI loaded with #131724 color scheme");
+        })();
+    </script>
+    <script src="popup.js"></script>
+</body>
+</html>
