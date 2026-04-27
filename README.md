@@ -1,4 +1,4 @@
-# 🛡️ GhostBrowse - Website Reputation Guardian
+GhostBrowse - Website Reputation Guardian
 
 <div align="center">
   <img src="icons/icon128.png" alt="GhostBrowse Logo" width="128" height="128">
