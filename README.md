@@ -4,14 +4,6 @@ GhostBrowse
   <h3>Real-Time Website Safety Analysis Browser Extension</h3>
   <p><i>Know the reputation of any website before you trust it</i></p>
   
-  <p>
-    <a href="#features">Features</a> •
-    <a href="#installation">Installation</a> •
-    <a href="#how-it-works">How It Works</a> •
-    <a href="#api-integration">API Integration</a> •
-    <a href="#screenshots">Screenshots</a> •
-    <a href="#contributing">Contributing</a>
-  </p>
   
   <p>
     <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version 1.0.0">
