@@ -105,3 +105,57 @@ In a world with over 5 billion websites and increasing cyber threats, this tool 
 ---
 
 ## 🚀 How It Works
+
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ User │────▶│ Extension │────▶│ Background │
+│ Browses │ │ Popup │ │ Worker │
+└─────────────┘ └─────────────┘ └─────────────┘
+│
+┌────────────────────────────┼────────────────────────────┐
+│ │ │
+▼ ▼ ▼
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ VirusTotal │ │ Wayback │ │ Google │
+│ API │ │ Machine │ │Safe Browsing│
+└─────────────┘ └─────────────┘ └─────────────┘
+│ │ │
+└────────────────────────────┼────────────────────────────┘
+│
+▼
+┌─────────────┐
+│ Safety Score│
+│ (0-100) │
+└─────────────┘
+
+
+
+---
+
+## 🔌 API Integration
+
+This extension uses the following third-party APIs:
+
+| API | Purpose | Documentation |
+|-----|---------|---------------|
+| **VirusTotal** | Malware detection from 70+ vendors | [virustotal.com](https://developers.virustotal.com/) |
+| **Wayback Machine** | Domain age and historical presence | [archive.org](https://archive.org/help/wayback_api.php) |
+| **Google Safe Browsing** | Real-time threat intelligence | [developers.google.com/safe-browsing](https://developers.google.com/safe-browsing) |
+
+---
+
+## 📊 Scoring Algorithm
+
+The safety score is calculated using the following weighted factors:
+
+| Factor | Weight | Impact |
+|--------|--------|--------|
+| VirusTotal Detection | ±30-40 points | ⛔ Malicious: -30, Suspicious: -10, Clean: +10 |
+| HTTPS Encryption | ±10 points | 🔒 Secure: +10, Insecure: -10 |
+| Wayback Archive | ±10-12 points | 📚 Found: +10-12, None: -5-8 |
+| Suspicious TLD | -10 points | ⚠️ .tk, .ml, .ga, .cf, .xyz, etc. |
+| IP Address Domain | -15 points | 🚫 Direct IP instead of domain name |
+
+**Base Score:** 50 points
+
+---
+
