@@ -1,7 +1,6 @@
-GhostBrowse - Website Reputation Guardian
+GhostBrowse
 
 <div align="center">
-  <img src="icons/icon128.png" alt="GhostBrowse Logo" width="128" height="128">
   <h3>Real-Time Website Safety Analysis Browser Extension</h3>
   <p><i>Know the reputation of any website before you trust it</i></p>
   
